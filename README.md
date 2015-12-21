@@ -8,6 +8,8 @@ Shows a log of PR's for a given commit range.
 
 ## Install
 
+Copy [git-prlog](git-prlog) to your path.
+
 Homebrew/OSX:
 
 ```
