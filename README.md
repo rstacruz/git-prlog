@@ -15,3 +15,9 @@ Homebrew/OSX:
 ```
 brew install --HEAD https://github.com/rstacruz/git-prlog/raw/master/Formula/git-prlog.rb
 ```
+
+npm:
+
+```
+npm install -g rstacruz/git-prlog
+```
