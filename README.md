@@ -13,5 +13,5 @@ Copy [git-prlog](git-prlog) to your path.
 Homebrew/OSX:
 
 ```
-brew install --HEAD https://github.com/rstacruz/git-prlog/master/Formula/git-prlog.rb
+brew install --HEAD https://github.com/rstacruz/git-prlog/raw/master/Formula/git-prlog.rb
 ```
