@@ -6,4 +6,10 @@ Shows a log of PR's for a given commit range.
     - #38: Fix titles - Rico S.
     - #24: Fix signatures - John A.
 
+## Install
 
+Homebrew/OSX:
+
+```
+brew install --HEAD https://github.com/rstacruz/git-prlog/master/Formula/git-prlog.rb
+```
