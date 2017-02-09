@@ -7,17 +7,29 @@
 
 commits=$(git log "$@" --oneline | grep "Merge pull request" | awk '{print $1}')
 if [ -z "$format" ]; then format='md'; fi
+if [ "$format" == 'md' ]; then
+  format='- %b (%P)'
+elif [ "$format" == 'mda' ]; then
+  format='- %P %b - *%an*'
+elif [ "$format" == 'tsv' ]; then
+  format="%dd\t%P\t%b\t%an"
+elif [ "$format" == 'raw' ]; then
+  format="%r\t%b"
+fi
 
 for commit in $commits; do
+  raw=$(git show $commit --pretty="%s" | head -n 1)
   pr=$(git show $commit --pretty="%s" | head -n 1 | awk '{print $4}')
   description=$(git show $commit --pretty="%b" | head -n 1)
   mergesource=$(git show $commit | grep "Merge: " | head -n 1 | awk '{print $3}')
-  author=$(git show $mergesource --pretty="%an" | head -n 1)
-  if [ $format == 'tsv' ]; then
-    date=$(git show $mergesource --pretty="%ct" | head -n 1)
-    date=$(date -r "$date" +%Y/%m/%d)
-    echo $date\\t$pr\\t$description\\t$author
-  else
-    echo - $pr $description - \*$author\*
-  fi
+  author_name=$(git show $mergesource --pretty="%an" | head -n 1)
+  date=$(git show $mergesource --pretty="%ct" | head -n 1)
+  date=$(date -r "$date" +%Y/%m/%d)
+
+  echo $format \
+    | sed "s~%dd~${date}~g" \
+    | sed "s~%b~${description}~g" \
+    | sed "s~%P~${pr}~g" \
+    | sed "s~%an~${author_name}~g" \
+    | sed "s~%r~${raw}~g"
 done
