@@ -5,12 +5,23 @@
 #     - #38: Fix titles - Rico S.
 #     - #24: Fix signatures - John A.
 
-while [[ $# -gt 0 ]]; do
-  case $1 in
-    -e|--expansive) expansive=1;;
-    *) git_params="${git_params} ${1}";
-  esac; shift
+for i in "$@"; do
+  case $i in
+    -f=*|--format=*)
+      format="${i#*=}"
+      shift
+      ;;
+    -e|--expansive)
+      expansive=1
+      shift
+      ;;
+    *)
+      git_params="${git_params} ${1}"
+      shift
+      ;;
+  esac
 done
+
 # trim leading whitespace
 git_params="$(echo -e "${git_params}" | sed -e 's/^[[:space:]]*//')"
 
