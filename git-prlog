@@ -5,7 +5,21 @@
 #     - #38: Fix titles - Rico S.
 #     - #24: Fix signatures - John A.
 
-commits=$(git log "$@" --oneline | grep "Merge pull request" | awk '{print $1}')
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    -e|--expansive) expansive=1;;
+    *) git_params="${git_params} ${1}";
+  esac; shift
+done
+# trim leading whitespace
+git_params="$(echo -e "${git_params}" | sed -e 's/^[[:space:]]*//')"
+
+if [[ $expansive ]]; then
+  commits=$(git log "$git_params" --oneline --first-parent | awk '{print $1}');
+else
+  commits=$(git log "$git_params" --oneline --first-parent | grep "Merge pull request" | awk '{print $1}');
+fi
+
 if [ -z "$format" ]; then format='md'; fi
 if [ "$format" == 'md' ]; then
   format='- %b (%P)'
@@ -25,6 +39,8 @@ for commit in $commits; do
   author_name=$(git show $mergesource --pretty="%an" | head -n 1)
   date=$(git show $mergesource --pretty="%ct" | head -n 1)
   date=$(date -r "$date" +%Y/%m/%d)
+
+  if ! [[ $pr = \#* ]]; then pr="$commit"; fi
 
   echo $format \
     | sed "s~%dd~${date}~g" \
